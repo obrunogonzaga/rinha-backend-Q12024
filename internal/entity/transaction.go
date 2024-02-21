@@ -8,3 +8,13 @@ type Transaction struct {
 	Description     string `json:"description"`
 	CreatedAt       string `json:"created_at"`
 }
+
+func NewTransaction(customerID int, amount int, transactionType string, description string) (*Transaction, error) {
+	t := &Transaction{
+		CustomerID:      customerID,
+		Amount:          amount,
+		TransactionType: transactionType,
+		Description:     description,
+	}
+	return t, nil
+}

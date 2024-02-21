@@ -21,7 +21,7 @@ func main() {
 	transactionDB := database.NewTransaction(db)
 
 	customerHandler := handlers.NewCustomer(customerDB)
-	transactionHandler := handlers.NewTransaction(transactionDB)
+	transactionHandler := handlers.NewTransaction(transactionDB, customerDB)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)

@@ -16,7 +16,7 @@ func NewTransaction(db *sql.DB) *Transaction {
 }
 
 func (t Transaction) CreateTransaction(transaction *entity.Transaction) error {
-	_, err := t.DB.Exec("INSERT INTO transactions (id, customer_id, amount, type) VALUES ($1, $2, $3, $4)", transaction.ID, transaction.CustomerID, transaction.Amount, transaction.TransactionType)
+	_, err := t.DB.Exec("INSERT INTO transactions (customer_id, amount, transaction_type, description) VALUES ($1, $2, $3, $4)", transaction.CustomerID, transaction.Amount, transaction.TransactionType, transaction.Description)
 	if err != nil {
 		return err
 	}
