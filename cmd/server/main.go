@@ -18,14 +18,17 @@ func main() {
 	defer db.Close()
 
 	customerDB := database.NewCustomer(db)
+	transactionDB := database.NewTransaction(db)
 
 	customerHandler := handlers.NewCustomer(customerDB)
+	transactionHandler := handlers.NewTransaction(transactionDB)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
 	r.Get("/clientes/{id}", customerHandler.GetCustomer)
+	r.Post("/clientes/{id}/transacoes", transactionHandler.CreateTransaction)
 
 	http.ListenAndServe(":8000", r)
 }
