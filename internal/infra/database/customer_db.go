@@ -26,9 +26,9 @@ func (c Customer) FindByID(id string) (*entity.Customer, error) {
 	return &customer, nil
 }
 
-func (c Customer) Update(customer *entity.Customer) error {
+func (c Customer) Update(tx *sql.Tx, customer *entity.Customer) error {
 	log.Printf("Atualizando cliente com id %s", customer.ID)
-	_, err := c.DB.Exec("UPDATE customers SET saldo = $1 WHERE id = $2", customer.Balance, customer.ID)
+	_, err := tx.Exec("UPDATE customers SET saldo = $1 WHERE id = $2", customer.Balance, customer.ID)
 	if err != nil {
 		return err
 	}

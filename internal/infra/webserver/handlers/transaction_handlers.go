@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/obrunogonzaga/rinha-backend-Q12024/internal/dto"
@@ -12,17 +13,20 @@ import (
 )
 
 type Transaction struct {
+	DB            *sql.DB
 	TransactionDB database.TransactionInterface
 	CustomerDB    database.CustomerInterface
 }
 
-func NewTransaction(transactionDB database.TransactionInterface, customerDB database.CustomerInterface) *Transaction {
+func NewTransaction(db *sql.DB, transactionDB database.TransactionInterface, customerDB database.CustomerInterface) *Transaction {
 	return &Transaction{
+		DB:            db,
 		TransactionDB: transactionDB,
 		CustomerDB:    customerDB,
 	}
 }
 
+// TODO: Fix problem that when transaction was with error, customer balance was updated. Using transactions to fix this.
 func (t *Transaction) CreateTransaction(w http.ResponseWriter, r *http.Request) {
 	var transaction dto.CreateTransactionInput
 	id := chi.URLParam(r, "id")
@@ -51,7 +55,16 @@ func (t *Transaction) CreateTransaction(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 	}
-	err = t.CustomerDB.Update(customer)
+
+	tx, err := t.DB.Begin()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Fatal(err)
+		return
+	}
+	defer tx.Rollback()
+
+	err = t.CustomerDB.Update(tx, customer)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Fatal(err)
@@ -70,7 +83,14 @@ func (t *Transaction) CreateTransaction(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = t.TransactionDB.CreateTransaction(trx)
+	err = t.TransactionDB.CreateTransaction(tx, trx)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Fatal(err)
+		return
+	}
+
+	err = tx.Commit()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Fatal(err)

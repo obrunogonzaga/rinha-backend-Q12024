@@ -20,8 +20,8 @@ func main() {
 	customerDB := database.NewCustomer(db)
 	transactionDB := database.NewTransaction(db)
 
-	customerHandler := handlers.NewCustomer(customerDB)
-	transactionHandler := handlers.NewTransaction(transactionDB, customerDB)
+	customerHandler := handlers.NewCustomer(db, customerDB)
+	transactionHandler := handlers.NewTransaction(db, transactionDB, customerDB)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/obrunogonzaga/rinha-backend-Q12024/internal/infra/database"
@@ -9,11 +10,13 @@ import (
 )
 
 type Customer struct {
+	DB         *sql.DB
 	CustomerDB database.CustomerInterface
 }
 
-func NewCustomer(customerDB database.CustomerInterface) *Customer {
+func NewCustomer(db *sql.DB, customerDB database.CustomerInterface) *Customer {
 	return &Customer{
+		DB:         db,
 		CustomerDB: customerDB,
 	}
 }
