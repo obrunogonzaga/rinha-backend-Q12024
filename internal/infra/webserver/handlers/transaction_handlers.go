@@ -62,7 +62,7 @@ func (t *Transaction) CreateTransaction(w http.ResponseWriter, r *http.Request) 
 
 	err = t.updateCustomerBalance(customer, transaction)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
@@ -98,7 +98,7 @@ func (t *Transaction) CreateTransaction(w http.ResponseWriter, r *http.Request) 
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 }
 
