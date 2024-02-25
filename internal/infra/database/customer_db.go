@@ -26,11 +26,14 @@ func (c Customer) FindByID(id string) (*entity.Customer, error) {
 	return &customer, nil
 }
 
-func (c Customer) Update(tx *sql.Tx, customer *entity.Customer) error {
+func (c Customer) Update(tx *sql.Tx, customer *entity.Customer) (*entity.Customer, error) {
 	log.Printf("Atualizando cliente com id %s", customer.ID)
-	_, err := tx.Exec("UPDATE customers SET saldo = $1 WHERE id = $2", customer.Balance, customer.ID)
+	row := tx.QueryRow("UPDATE customers SET saldo = $1 WHERE id = $2 RETURNING id, limite, saldo", customer.Balance, customer.ID)
+
+	var updatedCustomer entity.Customer
+	err := row.Scan(&updatedCustomer.ID, &updatedCustomer.Limit, &updatedCustomer.Balance)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &updatedCustomer, nil
 }

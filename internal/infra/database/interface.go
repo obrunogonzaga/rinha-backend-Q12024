@@ -7,7 +7,7 @@ import (
 
 type CustomerInterface interface {
 	FindByID(id string) (*entity.Customer, error)
-	Update(tx *sql.Tx, customer *entity.Customer) error
+	Update(tx *sql.Tx, customer *entity.Customer) (*entity.Customer, error)
 }
 
 type TransactionInterface interface {
