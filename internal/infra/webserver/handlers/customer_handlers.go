@@ -60,7 +60,7 @@ func (c *Customer) GetCustomer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(customer)
 }
 
-func (c *Customer) GetBalance(w http.ResponseWriter, r *http.Request) {
+func (c *Customer) GetStatement(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)

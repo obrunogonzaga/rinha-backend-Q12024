@@ -28,7 +28,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/clientes/{id}", customerHandler.GetCustomer)
-	r.Get("/clientes/{id}/extrato", customerHandler.GetBalance)
+	r.Get("/clientes/{id}/extrato", customerHandler.GetStatement)
 	r.Post("/clientes/{id}/transacoes", transactionHandler.CreateTransaction)
 
 	http.ListenAndServe(":8000", r)
