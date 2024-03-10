@@ -102,6 +102,21 @@ func (t *Transaction) CreateTransaction(w http.ResponseWriter, r *http.Request) 
 	w.Write(jsonData)
 }
 
+func (t *Transaction) GetTransactionsByCustomerId(id string) ([]entity.Transaction, error) {
+	if id == "" {
+		log.Fatal("Invalid ID")
+		return nil, errors.New("Invalid ID")
+	}
+
+	transactions, err := t.TransactionDB.GetTransactionsByCustomerID(id)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	return transactions, nil
+}
+
 func (t *Transaction) updateCustomerAndCreateTransaction(tx *sql.Tx, customerId int, customer *entity.Customer, transaction dto.CreateTransactionInput) error {
 	var wg sync.WaitGroup
 	var customerErr, transactionErr error

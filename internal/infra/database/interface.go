@@ -12,4 +12,5 @@ type CustomerInterface interface {
 
 type TransactionInterface interface {
 	CreateTransaction(tx *sql.Tx, transaction *entity.Transaction) error
+	GetTransactionsByCustomerID(id string) ([]entity.Transaction, error)
 }

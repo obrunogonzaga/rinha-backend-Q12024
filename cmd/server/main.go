@@ -20,7 +20,7 @@ func main() {
 	customerDB := database.NewCustomer(db)
 	transactionDB := database.NewTransaction(db)
 
-	customerHandler := handlers.NewCustomer(db, customerDB)
+	customerHandler := handlers.NewCustomer(db, customerDB, transactionDB)
 	transactionHandler := handlers.NewTransaction(db, transactionDB, customerDB)
 
 	r := chi.NewRouter()
@@ -28,6 +28,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/clientes/{id}", customerHandler.GetCustomer)
+	r.Get("/clientes/{id}/extrato", customerHandler.GetBalance)
 	r.Post("/clientes/{id}/transacoes", transactionHandler.CreateTransaction)
 
 	http.ListenAndServe(":8000", r)
